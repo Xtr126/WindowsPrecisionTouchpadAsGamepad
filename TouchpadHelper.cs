@@ -450,10 +450,14 @@ namespace RawInput.Touchpad
 
 								case (0x01, 0x30): // X
 									creator.X = (int)value;
+									creator.XMin = valueCap.LogicalMin;
+									creator.XMax = valueCap.LogicalMax;
 									break;
 
 								case (0x01, 0x31): // Y
 									creator.Y = (int)value;
+									creator.YMin = valueCap.LogicalMin;
+									creator.YMax = valueCap.LogicalMax;
 									break;
 							}
 							break;

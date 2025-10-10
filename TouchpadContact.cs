@@ -12,20 +12,42 @@ namespace RawInput.Touchpad
 		public int X { get; }
 		public int Y { get; }
 
-		public TouchpadContact(int contactId, int x, int y) =>
-			(this.ContactId, this.X, this.Y) = (contactId, x, y);
+		// New: physical or logical coordinate ranges
+		public int XMin { get; }
+		public int XMax { get; }
+		public int YMin { get; }
+		public int YMax { get; }
 
-		public override bool Equals(object obj) => (obj is TouchpadContact other) && Equals(other);
+		public TouchpadContact(int contactId, int x, int y,
+			int xMin = 0, int xMax = 0, int yMin = 0, int yMax = 0)
+		{
+			ContactId = contactId;
+			X = x;
+			Y = y;
+			XMin = xMin;
+			XMax = xMax;
+			YMin = yMin;
+			YMax = yMax;
+		}
+
+		public override bool Equals(object obj) => obj is TouchpadContact other && Equals(other);
 
 		public bool Equals(TouchpadContact other) =>
-			(this.ContactId == other.ContactId) && (this.X == other.X) && (this.Y == other.Y);
+			ContactId == other.ContactId &&
+			X == other.X &&
+			Y == other.Y &&
+			XMin == other.XMin &&
+			XMax == other.XMax &&
+			YMin == other.YMin &&
+			YMax == other.YMax;
 
 		public static bool operator ==(TouchpadContact a, TouchpadContact b) => a.Equals(b);
-		public static bool operator !=(TouchpadContact a, TouchpadContact b) => !(a == b);
+		public static bool operator !=(TouchpadContact a, TouchpadContact b) => !a.Equals(b);
 
-		public override int GetHashCode() => (this.ContactId, this.X, this.Y).GetHashCode();
+		public override int GetHashCode() => (ContactId, X, Y, XMin, XMax, YMin, YMax).GetHashCode();
 
-		public override string ToString() => $"Contact ID:{ContactId} Point:{X},{Y}";
+		public override string ToString() =>
+			$"Contact ID:{ContactId} Point:{X},{Y} Range:X[{XMin}-{XMax}] Y[{YMin}-{YMax}]";
 	}
 
 	internal class TouchpadContactCreator
@@ -34,13 +56,23 @@ namespace RawInput.Touchpad
 		public int? X { get; set; }
 		public int? Y { get; set; }
 
+		// New: optional range properties
+		public int? XMin { get; set; }
+		public int? XMax { get; set; }
+		public int? YMin { get; set; }
+		public int? YMax { get; set; }
+
 		public bool TryCreate(out TouchpadContact contact)
 		{
 			if (ContactId.HasValue && X.HasValue && Y.HasValue)
 			{
-				contact = new TouchpadContact(ContactId.Value, X.Value, Y.Value);
+				contact = new TouchpadContact(
+					ContactId.Value, X.Value, Y.Value,
+					XMin ?? 0, XMax ?? 0, YMin ?? 0, YMax ?? 0
+				);
 				return true;
 			}
+
 			contact = default;
 			return false;
 		}
@@ -50,6 +82,10 @@ namespace RawInput.Touchpad
 			ContactId = null;
 			X = null;
 			Y = null;
+			XMin = null;
+			XMax = null;
+			YMin = null;
+			YMax = null;
 		}
 	}
-}
+	}
