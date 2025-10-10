@@ -4,8 +4,11 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <Authors>emoacht</Authors>
-    <Copyright>Copyright © 2021 emoacht</Copyright>
+    <Authors>emoacht, Xtr126</Authors>
+    <Copyright>
+      Copyright © 2021 emoacht
+      Copyright © 2025 Xtr126
+    </Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
   </PropertyGroup>
