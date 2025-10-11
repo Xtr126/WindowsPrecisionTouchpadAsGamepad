@@ -63,8 +63,8 @@ namespace RawInput.Touchpad
 
 		static void WriteTouchpadContactFrame(BinaryWriter bw, TouchpadContact[] contacts)
 		{
-			// Calculate frame size: count (4) + contacts (28 * N)
-			int frameBodySize = 4 + contacts.Length * 28;
+			// Calculate frame size: count (4) + contacts (29 * N)
+			int frameBodySize = 4 + contacts.Length * 29;
 			bw.Write(frameBodySize);
 			bw.Write(contacts.Length);
 			foreach (var c in contacts)

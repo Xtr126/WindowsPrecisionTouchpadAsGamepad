@@ -103,6 +103,8 @@ namespace RawInput.Touchpad
 			XMax = null;
 			YMin = null;
 			YMax = null;
+			YMax = null;
+			Tip = null;
 		}
 	}
 	}
