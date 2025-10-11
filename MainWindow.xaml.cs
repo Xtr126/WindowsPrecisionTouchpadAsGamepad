@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -39,6 +40,7 @@ namespace RawInput.Touchpad
 
 		private HwndSource _targetSource;
 		private readonly List<string> _log = new();
+		private readonly BinaryWriter _binaryWriter = new BinaryWriter(Console.OpenStandardOutput());
 
 		protected override void OnSourceInitialized(EventArgs e)
 		{
@@ -59,12 +61,24 @@ namespace RawInput.Touchpad
 			}
 		}
 
+		static void WriteTouchpadContactFrame(BinaryWriter bw, TouchpadContact[] contacts)
+		{
+			// Calculate frame size: count (4) + contacts (28 * N)
+			int frameBodySize = 4 + contacts.Length * 28;
+			bw.Write(frameBodySize);
+			bw.Write(contacts.Length);
+			foreach (var c in contacts)
+				c.WriteTo(bw);
+			bw.Flush();
+		}
+		
 		private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
 		{
 			switch (msg)
 			{
 				case TouchpadHelper.WM_INPUT:
 					var contacts = TouchpadHelper.ParseInput(lParam);
+					WriteTouchpadContactFrame(_binaryWriter, contacts);
 					TouchpadContacts = string.Join(Environment.NewLine, contacts.Select(x => x.ToString()));
 					break;
 			}

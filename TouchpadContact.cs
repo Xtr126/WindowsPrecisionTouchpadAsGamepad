@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace RawInput.Touchpad
 {
@@ -48,6 +49,17 @@ namespace RawInput.Touchpad
 
 		public override string ToString() =>
 			$"Contact ID:{ContactId} Point:{X},{Y} Range:X[{XMin}-{XMax}] Y[{YMin}-{YMax}]";
+
+		public void WriteTo(BinaryWriter bw)
+		{
+			bw.Write(ContactId);
+			bw.Write(X);
+			bw.Write(Y);
+			bw.Write(XMin);
+			bw.Write(XMax);
+			bw.Write(YMin);
+			bw.Write(YMax);
+		}
 	}
 
 	internal class TouchpadContactCreator
