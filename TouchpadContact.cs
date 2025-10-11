@@ -12,15 +12,15 @@ namespace RawInput.Touchpad
 		public int ContactId { get; }
 		public int X { get; }
 		public int Y { get; }
+	    public bool Tip { get; }
 
-		// New: physical or logical coordinate ranges
 		public int XMin { get; }
 		public int XMax { get; }
 		public int YMin { get; }
 		public int YMax { get; }
 
 		public TouchpadContact(int contactId, int x, int y,
-			int xMin = 0, int xMax = 0, int yMin = 0, int yMax = 0)
+			int xMin = 0, int xMax = 0, int yMin = 0, int yMax = 0, bool tip = false)
 		{
 			ContactId = contactId;
 			X = x;
@@ -29,6 +29,7 @@ namespace RawInput.Touchpad
 			XMax = xMax;
 			YMin = yMin;
 			YMax = yMax;
+			Tip = tip;
 		}
 
 		public override bool Equals(object obj) => obj is TouchpadContact other && Equals(other);
@@ -37,6 +38,7 @@ namespace RawInput.Touchpad
 			ContactId == other.ContactId &&
 			X == other.X &&
 			Y == other.Y &&
+			Tip == other.Tip &&
 			XMin == other.XMin &&
 			XMax == other.XMax &&
 			YMin == other.YMin &&
@@ -48,7 +50,7 @@ namespace RawInput.Touchpad
 		public override int GetHashCode() => (ContactId, X, Y, XMin, XMax, YMin, YMax).GetHashCode();
 
 		public override string ToString() =>
-			$"Contact ID:{ContactId} Point:{X},{Y} Range:X[{XMin}-{XMax}] Y[{YMin}-{YMax}]";
+			$"Contact ID:{ContactId} Point:{X},{Y} Range:X[{XMin}-{XMax}] Y[{YMin}-{YMax} Tip:{Tip}]";
 
 		public void WriteTo(BinaryWriter bw)
 		{
@@ -59,6 +61,7 @@ namespace RawInput.Touchpad
 			bw.Write(XMax);
 			bw.Write(YMin);
 			bw.Write(YMax);
+			bw.Write((byte)(Tip ? 1 : 0));
 		}
 	}
 
@@ -67,6 +70,7 @@ namespace RawInput.Touchpad
 		public int? ContactId { get; set; }
 		public int? X { get; set; }
 		public int? Y { get; set; }
+		public bool? Tip { get; set; }
 
 		// New: optional range properties
 		public int? XMin { get; set; }
@@ -76,11 +80,12 @@ namespace RawInput.Touchpad
 
 		public bool TryCreate(out TouchpadContact contact)
 		{
-			if (ContactId.HasValue && X.HasValue && Y.HasValue)
+			if (ContactId.HasValue && X.HasValue && Y.HasValue && Tip.HasValue)
 			{
 				contact = new TouchpadContact(
 					ContactId.Value, X.Value, Y.Value,
-					XMin ?? 0, XMax ?? 0, YMin ?? 0, YMax ?? 0
+					XMin ?? 0, XMax ?? 0, YMin ?? 0, YMax ?? 0,
+					Tip ?? false
 				);
 				return true;
 			}

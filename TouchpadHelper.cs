@@ -231,6 +231,24 @@ namespace RawInput.Touchpad
 			IntPtr Report,
 			uint ReportLength);
 
+		[StructLayout(LayoutKind.Sequential)]
+		private struct USAGE_AND_PAGE
+		{
+			public ushort Usage;  // USAGE
+			public ushort UsagePage;
+		}
+		
+	    [DllImport("Hid.dll", SetLastError = true)]
+		private static extern uint HidP_GetUsagesEx(
+			HIDP_REPORT_TYPE ReportType,
+			ushort LinkCollection,               // USHORT
+			[Out] USAGE_AND_PAGE[] UsageList,    // array of USAGE_AND_PAGE
+			ref uint UsageLength,                // IN/OUT number of usages
+			IntPtr PreparsedData,                // PHIDP_PREPARSED_DATA
+			IntPtr Report,                       // PUCHAR Report
+			uint ReportLength                    // ULONG ReportLength
+		);
+
 		#endregion
 
 		public static bool Exists()
@@ -446,6 +464,7 @@ namespace RawInput.Touchpad
 							{
 								case (0x0D, 0x51): // Contact ID
 									creator.ContactId = (int)value;
+									creator.Tip = false;
 									break;
 
 								case (0x01, 0x30): // X
@@ -460,6 +479,28 @@ namespace RawInput.Touchpad
 									creator.YMax = valueCap.LogicalMax;
 									break;
 							}
+
+							uint usageCount = 9;
+							var usages = new USAGE_AND_PAGE[9];
+							if (HidP_GetUsagesEx(
+								HIDP_REPORT_TYPE.HidP_Input,
+								valueCap.LinkCollection,
+								usages,
+								ref usageCount,
+								preparsedDataPointer,
+								rawHidRawDataPointer,
+								(uint)rawHidRawData.Length) == HIDP_STATUS_SUCCESS)
+							{
+								for (int i = 0; i < usageCount; i++) {
+									switch (usages[i].UsagePage, usages[i].Usage)
+									{
+										case (0x0D, 0x42): // Tip
+											creator.Tip = true;
+											break;
+									}
+								}
+							}
+
 							break;
 					}
 
