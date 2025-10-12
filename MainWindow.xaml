@@ -1,31 +1,59 @@
 ﻿<Window x:Class="RawInput.Touchpad.MainWindow"
-		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-		x:Name="WindowRoot"
-		Title="RawInput Touchpad"
-		Height="260" Width="400" ResizeMode="NoResize">
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition/>
-		</Grid.RowDefinitions>
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Name="WindowRoot"
+        Title="RawInput Touchpad"
+        Height="320" Width="400"
+        ResizeMode="NoResize">
 
-		<TextBlock Grid.Row="0" VerticalAlignment="Center"
-				   Margin="10,0">
-			<Run Text="Precision touchpad exists:"/>
-			<Run FontWeight="Bold"
-				 Text="{Binding ElementName=WindowRoot, Path=TouchpadExists}"/>
-		</TextBlock>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/> <!-- Touchpad info -->
+            <RowDefinition Height="Auto"/> <!-- Network config -->
+            <RowDefinition/>               <!-- Contacts -->
+        </Grid.RowDefinitions>
 
-		<Button Grid.Row="0"
-				HorizontalAlignment="Right"
-				BorderThickness="0" Padding="8,4"
-				Content="Copy to clipboard"
-				Click="Copy_Click"/>
-		
-		<TextBlock Grid.Row="1"
-				   Margin="10"
-				   TextWrapping="Wrap"
-				   Text="{Binding ElementName=WindowRoot, Path=TouchpadContacts}"/>
-	</Grid>
+        <!-- Touchpad info -->
+        <TextBlock Margin="0,0,10,0" VerticalAlignment="Center">
+            <Run Text="Precision touchpad exists:"/>
+            <Run FontWeight="Bold"
+                    Text="{Binding ElementName=WindowRoot, Path=TouchpadExists}"/>
+        </TextBlock>
+
+        <!-- Network configuration -->
+        <StackPanel Grid.Row="1" Orientation="Vertical" Margin="0,10,0,10">
+            <TextBlock Text="Network Configuration" FontWeight="Bold" Margin="0,0,0,5"/>
+
+            <StackPanel Orientation="Horizontal" Margin="0,2">
+                <TextBlock Text="IP Address:" Width="90" VerticalAlignment="Center"/>
+                <TextBox x:Name="IpAddressBox"
+                         Width="150"
+                         Text="127.0.0.1"
+                         Margin="5,0"
+                         TextChanged="IpAddressBox_TextChanged"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,2">
+                <TextBlock Text="UDP Port:" Width="90" VerticalAlignment="Center"/>
+                <TextBox x:Name="UdpPortBox"
+                         Width="80"
+                         Text="5050"
+                         Margin="5,0"
+                         TextChanged="UdpPortBox_TextChanged"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" Margin="0,5">
+                <CheckBox x:Name="StdoutEnableSwitch"
+                          Content="Write to console standard output"
+                          VerticalAlignment="Center"
+                          Checked="StdoutEnableSwitch_Checked"
+                          Unchecked="StdoutEnableSwitch_Unchecked"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- Touchpad contacts -->
+        <TextBlock Grid.Row="2"
+                   TextWrapping="Wrap"
+                   Text="{Binding ElementName=WindowRoot, Path=TouchpadContacts}"/>
+    </Grid>
 </Window>

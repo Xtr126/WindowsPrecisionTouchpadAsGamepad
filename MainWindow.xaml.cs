@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Net;
 
 namespace RawInput.Touchpad
 {
@@ -41,6 +42,8 @@ namespace RawInput.Touchpad
 		private HwndSource _targetSource;
 		private readonly List<string> _log = new();
 		private readonly BinaryWriter _binaryWriter = new BinaryWriter(Console.OpenStandardOutput());
+        private TouchpadUdpSender _sender = new TouchpadUdpSender("127.0.0.1", 5050);
+        private bool _stdoutEnabled = false;
 
 		protected override void OnSourceInitialized(EventArgs e)
 		{
@@ -78,16 +81,60 @@ namespace RawInput.Touchpad
 			{
 				case TouchpadHelper.WM_INPUT:
 					var contacts = TouchpadHelper.ParseInput(lParam);
-					WriteTouchpadContactFrame(_binaryWriter, contacts);
+					
+					if (_stdoutEnabled) 
+						WriteTouchpadContactFrame(_binaryWriter, contacts);
+					else 
+						_sender.SendContacts(contacts);
+					
 					TouchpadContacts = string.Join(Environment.NewLine, contacts.Select(x => x.ToString()));
 					break;
 			}
 			return IntPtr.Zero;
 		}
 
-		private void Copy_Click(object sender, RoutedEventArgs e)
-		{
-			Clipboard.SetText(string.Join(Environment.NewLine, _log));
-		}
+        private string _ipAddress = "127.0.0.1";
+        private int _udpPort = 5050;
+
+		private void IpAddressBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            string newIp = IpAddressBox.Text.Trim();
+
+            if (IPAddress.TryParse(newIp, out _))
+            {
+                _ipAddress = newIp;
+                IpAddressBox.ClearValue(System.Windows.Controls.Control.BorderBrushProperty);
+				_sender = new TouchpadUdpSender(_ipAddress, _udpPort);
+            }
+            else
+            {
+                // Show a red border if invalid
+                IpAddressBox.BorderBrush = System.Windows.Media.Brushes.Red;
+            }
+        }
+
+        private void UdpPortBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            if (int.TryParse(UdpPortBox.Text, out int port) && port > 0 && port <= 65535)
+            {
+                _udpPort = port;
+                UdpPortBox.ClearValue(System.Windows.Controls.Control.BorderBrushProperty);
+				_sender = new TouchpadUdpSender(_ipAddress, _udpPort);
+            }
+            else
+            {
+                UdpPortBox.BorderBrush = System.Windows.Media.Brushes.Red;
+            }
+        }
+
+        private void StdoutEnableSwitch_Checked(object sender, RoutedEventArgs e)
+        {
+            _stdoutEnabled = true;
+        }
+
+        private void StdoutEnableSwitch_Unchecked(object sender, RoutedEventArgs e)
+        {
+            _stdoutEnabled = false;
+        }
 	}
 }
