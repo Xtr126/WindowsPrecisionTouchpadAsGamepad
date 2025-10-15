@@ -43,7 +43,7 @@
                         Margin="5,0"
                         TextChanged="UdpPortBox_TextChanged"/>
                 <CheckBox x:Name="UdpEnableSwitch"
-                        Content="Enable UDP"
+                        Content="Enable"
                         VerticalAlignment="Center"
                         Margin="10,0,0,0"
                         Checked="UdpEnableSwitch_Checked"
@@ -59,17 +59,22 @@
                         Margin="5,0"
                         TextChanged="TcpPortBox_TextChanged"/>
                 <CheckBox x:Name="TcpEnableSwitch"
-                        Content="Enable TCP"
+                        Content="Enable"
                         VerticalAlignment="Center"
-                        Margin="10,0,0,0"
+                        Margin="10,0,-25,0"
                         Checked="TcpEnableSwitch_Checked"
                         Unchecked="TcpEnableSwitch_Unchecked"/>
+                <Button Style="{DynamicResource AccentButtonStyle}" 
+                        VerticalAlignment="Center"
+                        Content="Connect"
+                        Margin="5,0,0,0"
+                        Click="TCP_Connect"/>
             </StackPanel>
 
             <!-- Stdout Output -->
             <StackPanel Orientation="Horizontal" Margin="0,5">
                 <CheckBox x:Name="StdoutEnableSwitch"
-                        Content="Write to console standard output"
+                        Content="Write data to standard output stream"
                         VerticalAlignment="Center"
                         Checked="StdoutEnableSwitch_Checked"
                         Unchecked="StdoutEnableSwitch_Unchecked"/>

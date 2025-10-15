@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Windows;
 
 namespace RawInput.Touchpad
 {
@@ -23,14 +24,38 @@ namespace RawInput.Touchpad
             _binaryWriter = new BinaryWriter(_memoryStream);
         }
 
+        
         public void Connect()
         {
-            if (_isConnected) return;
-            
-            _tcpClient.Connect(_remoteEndpoint);
-            _networkStream = _tcpClient.GetStream();
-            _isConnected = true;
+            if (_isConnected)
+                return;
+
+            try
+            {
+                _tcpClient.Connect(_remoteEndpoint);
+                _networkStream = _tcpClient.GetStream();
+                _isConnected = true;
+            }
+            catch (SocketException ex)
+            {
+                MessageBox.Show(
+                    $"Unable to connect to server:\n{ex.Message}",
+                    "Connection Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(
+                    $"An unexpected error occurred:\n{ex.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+            }
         }
+
 
         public void Disconnect()
         {
@@ -60,8 +85,7 @@ namespace RawInput.Touchpad
                 return;
 
             // Ensure we're connected before sending
-            if (!_isConnected)
-                Connect();
+            if (!_isConnected) return;
 
             try
             {

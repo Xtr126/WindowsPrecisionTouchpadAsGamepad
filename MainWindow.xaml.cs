@@ -184,6 +184,11 @@ namespace RawInput.Touchpad
 		{
 			_tcpEnabled = false;
 		}
+		
+		private void TCP_Connect(object sender, RoutedEventArgs e)
+		{
+			_tcpSender.Connect();
+		}
 
 	}
 }
