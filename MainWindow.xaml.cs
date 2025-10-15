@@ -13,6 +13,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Net;
+using System.Collections.ObjectModel;
 
 namespace RawInput.Touchpad
 {
@@ -25,14 +26,6 @@ namespace RawInput.Touchpad
 		}
 		public static readonly DependencyProperty TouchpadExistsProperty =
 			DependencyProperty.Register("TouchpadExists", typeof(bool), typeof(MainWindow), new PropertyMetadata(false));
-
-		public string TouchpadContacts
-		{
-			get { return (string)GetValue(TouchpadContactsProperty); }
-			set { SetValue(TouchpadContactsProperty, value); }
-		}
-		public static readonly DependencyProperty TouchpadContactsProperty =
-			DependencyProperty.Register("TouchpadContacts", typeof(string), typeof(MainWindow), new PropertyMetadata(null));
 
 		public MainWindow()
 		{
@@ -50,11 +43,15 @@ namespace RawInput.Touchpad
         private string _ipAddress = "127.0.0.1";
         private int _udpPort = 5050;
         private int _tcpPort = 6060;
+        private ObservableCollection<TouchpadContactView> _contacts =
+            new ObservableCollection<TouchpadContactView>();
+        private bool _showContacts = true;
 
 
 		protected override void OnSourceInitialized(EventArgs e)
 		{
 			base.OnSourceInitialized(e);
+			ContactsGrid.ItemsSource = _contacts;
 
 			_targetSource = PresentationSource.FromVisual(this) as HwndSource;
 			_targetSource?.AddHook(WndProc);
@@ -69,7 +66,18 @@ namespace RawInput.Touchpad
 
 				_log.Add($"Precision touchpad registered: {success}");
 			}
+			
 		}
+
+		public void UpdateContacts(TouchpadContact[] newContacts)
+        {	
+            // Clear and repopulate the observable collection
+            _contacts.Clear();
+            foreach (var view in TouchpadContactView.FromContacts(newContacts))
+            {
+                _contacts.Add(view);
+            }
+        }
 
 		static void WriteTouchpadContactFrame(BinaryWriter bw, TouchpadContact[] contacts)
 		{
@@ -98,7 +106,8 @@ namespace RawInput.Touchpad
 					if (_udpEnabled)
 						_udpSender.SendContacts(contacts);
 
-					TouchpadContacts = string.Join(Environment.NewLine, contacts.Select(x => x.ToString()));
+					if (_showContacts)
+						UpdateContacts(contacts);
 					break;
 			}
 			return IntPtr.Zero;
@@ -161,33 +170,47 @@ namespace RawInput.Touchpad
             _stdoutEnabled = false;
         }
 
-		// Called when UDP enable switch is checked
+		// Called when UDP enable checkbox is checked
 		private void UdpEnableSwitch_Checked(object sender, RoutedEventArgs e)
 		{
             _udpEnabled = true;
 		}
 
-		// Called when UDP enable switch is unchecked
+		// Called when UDP enable checkbox is unchecked
 		private void UdpEnableSwitch_Unchecked(object sender, RoutedEventArgs e)
 		{
 			_udpEnabled = false;
 		}
 
-		// Called when TCP enable switch is checked
+		// Called when TCP enable checkbox is checked
 		private void TcpEnableSwitch_Checked(object sender, RoutedEventArgs e)
 		{
+			TcpConnectButton.IsEnabled = true;
 			_tcpEnabled = true;
 		}
 
-		// Called when TCP enable switch is unchecked
+		// Called when TCP enable checkbox is unchecked
 		private void TcpEnableSwitch_Unchecked(object sender, RoutedEventArgs e)
 		{
+			TcpConnectButton.IsEnabled = false;
 			_tcpEnabled = false;
 		}
 		
 		private void TCP_Connect(object sender, RoutedEventArgs e)
 		{
 			_tcpSender.Connect();
+		}
+
+		// Called when show contacts checkbox is checked
+		private void ShowContacts_Checked(object sender, RoutedEventArgs e)
+		{
+			_showContacts = true;
+		}
+
+		// Called when show contacts checkbox is unchecked
+		private void ShowContacts_Unchecked(object sender, RoutedEventArgs e)
+		{
+			_showContacts = false;
 		}
 
 	}

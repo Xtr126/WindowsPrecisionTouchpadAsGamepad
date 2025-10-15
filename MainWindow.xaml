@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Name="WindowRoot"
         Title="RawInput Touchpad"
-        Height="400" Width="400"
+        Height="500" Width="400"
         ResizeMode="NoResize">
 
     <Grid Margin="10">
@@ -64,26 +64,42 @@
                         Margin="10,0,-25,0"
                         Checked="TcpEnableSwitch_Checked"
                         Unchecked="TcpEnableSwitch_Unchecked"/>
-                <Button Style="{DynamicResource AccentButtonStyle}" 
+                <Button x:Name="TcpConnectButton" 
+                        Style="{DynamicResource AccentButtonStyle}" 
                         VerticalAlignment="Center"
+                        IsEnabled="false"
                         Content="Connect"
                         Margin="5,0,0,0"
                         Click="TCP_Connect"/>
             </StackPanel>
 
-            <!-- Stdout Output -->
-            <StackPanel Orientation="Horizontal" Margin="0,5">
-                <CheckBox x:Name="StdoutEnableSwitch"
-                        Content="Write data to standard output stream"
-                        VerticalAlignment="Center"
-                        Checked="StdoutEnableSwitch_Checked"
-                        Unchecked="StdoutEnableSwitch_Unchecked"/>
-            </StackPanel>
+            <CheckBox x:Name="StdoutEnableSwitch"
+                    Content="Write data to standard output stream"
+                    VerticalAlignment="Center"
+                    Checked="StdoutEnableSwitch_Checked"
+                    Unchecked="StdoutEnableSwitch_Unchecked"/>
+
+            <CheckBox x:Name="ShowContacts"
+                Content="Show contacts"
+                VerticalAlignment="Center"
+                IsChecked="true"
+                Checked="ShowContacts_Checked"
+                Unchecked="ShowContacts_Unchecked"/>
+
         </StackPanel>
 
-        <!-- Touchpad contacts -->
-        <TextBlock Grid.Row="2"
-                   TextWrapping="Wrap"
-                   Text="{Binding ElementName=WindowRoot, Path=TouchpadContacts}"/>
+        <DataGrid x:Name="ContactsGrid" 
+                  Grid.Row="2"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True"
+                  Margin="10">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Contact ID" Binding="{Binding ContactId}" Width="Auto"/>
+                <DataGridTextColumn Header="Point" Binding="{Binding Point}" Width="Auto"/>
+                <DataGridTextColumn Header="Range" Binding="{Binding Range}" Width="*" />
+                <DataGridCheckBoxColumn Header="Tip" Binding="{Binding Tip}" Width="Auto"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
     </Grid>
 </Window>

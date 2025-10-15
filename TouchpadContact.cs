@@ -7,6 +7,26 @@ using System.IO;
 
 namespace RawInput.Touchpad
 {
+
+	public class TouchpadContactView
+	{
+		public int ContactId { get; set; }
+		public string Point { get; set; }
+		public string Range { get; set; }
+		public bool Tip { get; set; }
+
+		public static IEnumerable<TouchpadContactView> FromContacts(IEnumerable<TouchpadContact> contacts)
+		{
+			return contacts.Select(c => new TouchpadContactView
+			{
+				ContactId = c.ContactId,
+				Point = $"{c.X},{c.Y}",
+				Range = $"X[{c.XMin}-{c.XMax}] Y[{c.YMin}-{c.YMax}]",
+				Tip = c.Tip
+			});
+		}
+	}
+
 	public struct TouchpadContact : IEquatable<TouchpadContact>
 	{
 		public int ContactId { get; }
