@@ -45,7 +45,7 @@ namespace RawInput.Touchpad
         private int _tcpPort = 6060;
         private ObservableCollection<TouchpadContactView> _contacts =
             new ObservableCollection<TouchpadContactView>();
-        private bool _showContacts = false;
+        private bool _showContacts = true;
 
 
 		protected override void OnSourceInitialized(EventArgs e)
@@ -106,7 +106,7 @@ namespace RawInput.Touchpad
 					if (_udpEnabled)
 						_udpSender.SendContacts(contacts);
 
-					if (_showContacts)
+					if (_showContacts && ContactsContent.Visibility == Visibility.Visible)
 						UpdateContacts(contacts);
 					break;
 			}
@@ -211,6 +211,28 @@ namespace RawInput.Touchpad
 		private void ShowContacts_Unchecked(object sender, RoutedEventArgs e)
 		{
 			_showContacts = false;
+		}
+
+		private void IconListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			// Hide all
+			DevicesContent.Visibility = Visibility.Collapsed;
+			DataOutContent.Visibility = Visibility.Collapsed;
+			ContactsContent.Visibility = Visibility.Collapsed;
+
+			// Show the selected one
+			switch (IconListView.SelectedIndex)
+			{
+				case 0:
+					DevicesContent.Visibility = Visibility.Visible;
+					break;
+				case 1:
+					DataOutContent.Visibility = Visibility.Visible;
+					break;
+				case 2:
+					ContactsContent.Visibility = Visibility.Visible;
+					break;
+			}
 		}
 
 	}

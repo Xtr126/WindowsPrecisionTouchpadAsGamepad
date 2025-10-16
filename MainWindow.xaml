@@ -3,103 +3,156 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Name="WindowRoot"
         Title="RawInput Touchpad"
-        Height="500" Width="400"
-        ResizeMode="NoResize">
-
+        Height="500" Width="600">
+    
     <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/> <!-- Touchpad info -->
-            <RowDefinition Height="Auto"/> <!-- Network config -->
-            <RowDefinition/>               <!-- Contacts -->
-        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>  
+            <ColumnDefinition Width="*"/>     
+        </Grid.ColumnDefinitions>
 
-        <!-- Touchpad info -->
-        <TextBlock Margin="0,0,10,0" VerticalAlignment="Center">
-            <Run Text="Precision touchpad exists:"/>
-            <Run FontWeight="Bold"
-                    Text="{Binding ElementName=WindowRoot, Path=TouchpadExists}"/>
-        </TextBlock>
-
-        <!-- Network configuration -->
-        <StackPanel Grid.Row="1" Orientation="Vertical" Margin="0,10,0,10">
-            <TextBlock Text="Network Configuration" FontWeight="Bold" Margin="0,0,0,5"/>
-
-            <!-- IP Address -->
-            <StackPanel Orientation="Horizontal" Margin="0,2">
-                <TextBlock Text="IP Address:" Width="90" VerticalAlignment="Center"/>
-                <TextBox x:Name="IpAddressBox"
-                        Width="150"
-                        Text="127.0.0.1"
-                        Margin="5,0"
-                        TextChanged="IpAddressBox_TextChanged"/>
+        <!-- Right column: content views -->
+        <Grid Grid.Column="1" Margin="20">
+            <StackPanel x:Name="DevicesContent" Orientation="Vertical" Margin="0,10,0,10">
+            
             </StackPanel>
 
-            <!-- UDP Port -->
-            <StackPanel Orientation="Horizontal" Margin="0,2">
-                <TextBlock Text="UDP Port:" Width="90" VerticalAlignment="Center"/>
-                <TextBox x:Name="UdpPortBox"
-                        Width="80"
-                        Text="5050"
-                        Margin="5,0"
-                        TextChanged="UdpPortBox_TextChanged"/>
-                <CheckBox x:Name="UdpEnableSwitch"
-                        Content="Enable"
-                        VerticalAlignment="Center"
-                        Margin="10,0,0,0"
-                        Checked="UdpEnableSwitch_Checked"
-                        Unchecked="UdpEnableSwitch_Unchecked"/>
-            </StackPanel>
+            <StackPanel x:Name="DataOutContent" Orientation="Vertical" Margin="0,10,0,10">
+                <!-- Network configuration -->
+                <TextBlock Text="Network Configuration" FontWeight="Bold" Margin="0,0,0,5"/>
 
-            <!-- TCP Port -->
-            <StackPanel Orientation="Horizontal" Margin="0,2">
-                <TextBlock Text="TCP Port:" Width="90" VerticalAlignment="Center"/>
-                <TextBox x:Name="TcpPortBox"
-                        Width="80"
-                        Text="6060"
-                        Margin="5,0"
-                        TextChanged="TcpPortBox_TextChanged"/>
-                <CheckBox x:Name="TcpEnableSwitch"
-                        Content="Enable"
-                        VerticalAlignment="Center"
-                        Margin="10,0,-25,0"
-                        Checked="TcpEnableSwitch_Checked"
-                        Unchecked="TcpEnableSwitch_Unchecked"/>
-                <Button x:Name="TcpConnectButton" 
-                        Style="{DynamicResource AccentButtonStyle}" 
-                        VerticalAlignment="Center"
-                        IsEnabled="false"
-                        Content="Connect"
-                        Margin="5,0,0,0"
-                        Click="TCP_Connect"/>
-            </StackPanel>
+                <!-- IP Address -->
+                <StackPanel Orientation="Horizontal" Margin="0,2">
+                    <TextBlock Text="IP Address:" Width="90" VerticalAlignment="Center"/>
+                    <TextBox x:Name="IpAddressBox"
+                            Width="150"
+                            Text="127.0.0.1"
+                            Margin="5,0"
+                            TextChanged="IpAddressBox_TextChanged"/>
+                </StackPanel>
 
-            <CheckBox x:Name="StdoutEnableSwitch"
-                    Content="Write data to standard output stream"
+                <!-- UDP Port -->
+                <StackPanel Orientation="Horizontal" Margin="0,2">
+                    <TextBlock Text="UDP Port:" Width="90" VerticalAlignment="Center"/>
+                    <TextBox x:Name="UdpPortBox"
+                            Width="80"
+                            Text="5050"
+                            Margin="5,0"
+                            TextChanged="UdpPortBox_TextChanged"/>
+                    <CheckBox x:Name="UdpEnableSwitch"
+                            Content="Enable"
+                            VerticalAlignment="Center"
+                            Margin="10,0,0,0"
+                            Checked="UdpEnableSwitch_Checked"
+                            Unchecked="UdpEnableSwitch_Unchecked"/>
+                </StackPanel>
+
+                <!-- TCP Port -->
+                <StackPanel Orientation="Horizontal" Margin="0,2">
+                    <TextBlock Text="TCP Port:" Width="90" VerticalAlignment="Center"/>
+                    <TextBox x:Name="TcpPortBox"
+                            Width="80"
+                            Text="6060"
+                            Margin="5,0"
+                            TextChanged="TcpPortBox_TextChanged"/>
+                    <CheckBox x:Name="TcpEnableSwitch"
+                            Content="Enable"
+                            VerticalAlignment="Center"
+                            Margin="10,0,-25,0"
+                            Checked="TcpEnableSwitch_Checked"
+                            Unchecked="TcpEnableSwitch_Unchecked"/>
+                    <Button x:Name="TcpConnectButton" 
+                            Style="{DynamicResource AccentButtonStyle}" 
+                            VerticalAlignment="Center"
+                            IsEnabled="false"
+                            Content="Connect"
+                            Margin="5,0,0,0"
+                            Click="TCP_Connect"/>
+                </StackPanel>
+                <!-- Write to stdout  -->
+                <CheckBox x:Name="StdoutEnableSwitch"
+                        Content="Write data to standard output stream"
+                        VerticalAlignment="Center"
+                        Checked="StdoutEnableSwitch_Checked"
+                        Unchecked="StdoutEnableSwitch_Unchecked"/>
+            </StackPanel>
+            
+            <StackPanel x:Name="ContactsContent" Orientation="Vertical">
+                <!-- Touchpad info -->
+                <TextBlock Margin="0,0,10,0" VerticalAlignment="Center">
+                    <Run Text="Precision touchpad exists:"/>
+                    <Run FontWeight="Bold"
+                            Text="{Binding ElementName=WindowRoot, Path=TouchpadExists}"/>
+                </TextBlock>
+
+                <!-- Show contacts checkbox -->
+                <CheckBox x:Name="ShowContacts"
+                    Content="Show contacts (impacts performance)"
                     VerticalAlignment="Center"
-                    Checked="StdoutEnableSwitch_Checked"
-                    Unchecked="StdoutEnableSwitch_Unchecked"/>
+                    IsChecked="true"
+                    Checked="ShowContacts_Checked"
+                    Unchecked="ShowContacts_Unchecked"/>
 
-            <CheckBox x:Name="ShowContacts"
-                Content="Show contacts (impacts performance)"
-                VerticalAlignment="Center"
-                IsChecked="false"
-                Checked="ShowContacts_Checked"
-                Unchecked="ShowContacts_Unchecked"/>
+                <!-- Data grid for contacts  -->
+                <DataGrid x:Name="ContactsGrid" 
+                        AutoGenerateColumns="False"
+                        IsReadOnly="True"
+                        Margin="10">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Contact ID" Binding="{Binding ContactId}" Width="Auto"/>
+                        <DataGridTextColumn Header="Point" Binding="{Binding Point}" Width="Auto"/>
+                        <DataGridTextColumn Header="Range" Binding="{Binding Range}" Width="*" />
+                        <DataGridCheckBoxColumn Header="Tip" Binding="{Binding Tip}" Width="Auto"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+        </Grid>
 
-        </StackPanel>
+        <!-- Left column: Icon List -->
+        <ListView x:Name="IconListView" 
+          Grid.Column="0"
+          VerticalAlignment="Center"
+          Background="Transparent"
+          SelectionChanged="IconListView_SelectionChanged"
+          SelectedIndex="2">
+            <ListViewItem Height="60">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <TextBlock Text="&#xEA6C;" 
+                            FontFamily="{StaticResource SymbolThemeFontFamily}" 
+                            FontSize="24" 
+                            HorizontalAlignment="Center"/>
+                    <TextBlock Text="Devices" 
+                            FontSize="14" 
+                            HorizontalAlignment="Center"/>
+                </StackPanel>
+            </ListViewItem>
 
-        <DataGrid x:Name="ContactsGrid" 
-                  Grid.Row="2"
-                  AutoGenerateColumns="False"
-                  IsReadOnly="True"
-                  Margin="10">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Contact ID" Binding="{Binding ContactId}" Width="Auto"/>
-                <DataGridTextColumn Header="Point" Binding="{Binding Point}" Width="Auto"/>
-                <DataGridTextColumn Header="Range" Binding="{Binding Range}" Width="*" />
-                <DataGridCheckBoxColumn Header="Tip" Binding="{Binding Tip}" Width="Auto"/>
-            </DataGrid.Columns>
-        </DataGrid>
+            <ListViewItem Height="60">  
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <TextBlock Text="&#xE93E;" 
+                            FontFamily="{StaticResource SymbolThemeFontFamily}" 
+                            FontSize="24" 
+                            HorizontalAlignment="Center"/>
+                    <TextBlock Text="Data out" 
+                            FontSize="14" 
+                            HorizontalAlignment="Center"/>
+                </StackPanel>
+            </ListViewItem>
+
+            <ListViewItem Height="60">
+                <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+                    <TextBlock Text="&#xE7C8;" 
+                            FontFamily="{StaticResource SymbolThemeFontFamily}"  
+                            FontSize="24" 
+                            HorizontalAlignment="Center"/>
+                    <TextBlock Text="Contacts" 
+                            FontSize="14" 
+                            HorizontalAlignment="Center"/>
+                </StackPanel>
+            </ListViewItem>
+        </ListView>
+
 
     </Grid>
 </Window>
