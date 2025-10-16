@@ -13,12 +13,23 @@
         </Grid.ColumnDefinitions>
 
         <!-- Right column: content views -->
-        <Grid Grid.Column="1" Margin="20">
-            <StackPanel x:Name="DevicesContent" Orientation="Vertical" Margin="0,10,0,10">
-            
-            </StackPanel>
+        <Grid Grid.Column="1" >
+            <DockPanel Margin="10" x:Name="DevicesContent">
+                <Button Content="List Devices"
+                    DockPanel.Dock="Top"
+                    Margin="0,0,0,10"
+                    Padding="6"
+                    Click="ListDevices_Click"/>
 
-            <StackPanel x:Name="DataOutContent" Orientation="Vertical" Margin="0,10,0,10">
+                <DataGrid x:Name="DevicesGrid"
+                        AutoGenerateColumns="True"
+                        IsReadOnly="True"
+                        SelectionMode="Single"
+                        CanUserAddRows="False"/>
+
+            </DockPanel>
+
+            <StackPanel x:Name="DataOutContent" Orientation="Vertical" Margin="10">
                 <!-- Network configuration -->
                 <TextBlock Text="Network Configuration" FontWeight="Bold" Margin="0,0,0,5"/>
 
@@ -78,7 +89,7 @@
                         Unchecked="StdoutEnableSwitch_Unchecked"/>
             </StackPanel>
             
-            <StackPanel x:Name="ContactsContent" Orientation="Vertical">
+            <StackPanel x:Name="ContactsContent" Orientation="Vertical" Margin="10">
                 <!-- Touchpad info -->
                 <TextBlock Margin="0,0,10,0" VerticalAlignment="Center">
                     <Run Text="Precision touchpad exists:"/>

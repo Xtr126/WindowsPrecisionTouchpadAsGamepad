@@ -46,6 +46,7 @@ namespace RawInput.Touchpad
         private ObservableCollection<TouchpadContactView> _contacts =
             new ObservableCollection<TouchpadContactView>();
         private bool _showContacts = true;
+        private List<AdbDevice> _devices = new();
 
 
 		protected override void OnSourceInitialized(EventArgs e)
@@ -235,5 +236,20 @@ namespace RawInput.Touchpad
 			}
 		}
 
+        private void ListDevices_Click(object sender, RoutedEventArgs e)
+        {
+            _devices.Clear();
+
+            if (AdbHelper.GetConnectedDevices(_devices))
+            {
+                DevicesGrid.ItemsSource = null; // Refresh
+                DevicesGrid.ItemsSource = _devices;
+            }
+            else
+            {
+                MessageBox.Show("No devices found.", "ADB Devices", MessageBoxButton.OK, MessageBoxImage.Information);
+                DevicesGrid.ItemsSource = null;
+            }
+        }
 	}
 }
