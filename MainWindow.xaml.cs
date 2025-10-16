@@ -45,7 +45,7 @@ namespace RawInput.Touchpad
         private int _tcpPort = 6060;
         private ObservableCollection<TouchpadContactView> _contacts =
             new ObservableCollection<TouchpadContactView>();
-        private bool _showContacts = true;
+        private bool _showContacts = false;
 
 
 		protected override void OnSourceInitialized(EventArgs e)

@@ -80,9 +80,9 @@
                     Unchecked="StdoutEnableSwitch_Unchecked"/>
 
             <CheckBox x:Name="ShowContacts"
-                Content="Show contacts"
+                Content="Show contacts (impacts performance)"
                 VerticalAlignment="Center"
-                IsChecked="true"
+                IsChecked="false"
                 Checked="ShowContacts_Checked"
                 Unchecked="ShowContacts_Unchecked"/>
 
