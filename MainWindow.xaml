@@ -3,9 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Name="WindowRoot"
         Title="Touchpad to gamepad"
-        Height="500" Width="600">
+        Height="500" Width="500">
     
-    <Grid Margin="10">
+    <Grid>
         
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>  
