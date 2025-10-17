@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace RawInput.Touchpad
+namespace Gamepad.Touchpad
 {
     internal static class AdbDevicesParser
     {

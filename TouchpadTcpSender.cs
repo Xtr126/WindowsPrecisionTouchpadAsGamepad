@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Windows;
 
-namespace RawInput.Touchpad
+namespace Gamepad.Touchpad
 {
     public class TouchpadTcpSender : IDisposable
     {

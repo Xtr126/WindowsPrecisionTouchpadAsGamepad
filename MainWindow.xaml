@@ -1,8 +1,8 @@
-﻿<Window x:Class="RawInput.Touchpad.MainWindow"
+﻿<Window x:Class="Gamepad.Touchpad.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         x:Name="WindowRoot"
-        Title="RawInput Touchpad"
+        Title="Touchpad to gamepad"
         Height="500" Width="600">
     
     <Grid Margin="10">

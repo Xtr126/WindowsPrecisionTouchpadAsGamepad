@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows;
 using System.ComponentModel;
 
-namespace RawInput.Touchpad
+namespace Gamepad.Touchpad
 {
     internal class AdbHelper
     {

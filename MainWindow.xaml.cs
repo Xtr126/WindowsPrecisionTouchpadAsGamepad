@@ -15,7 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Net;
 using System.Collections.ObjectModel;
 
-namespace RawInput.Touchpad
+namespace Gamepad.Touchpad
 {
 	public partial class MainWindow : Window
 	{

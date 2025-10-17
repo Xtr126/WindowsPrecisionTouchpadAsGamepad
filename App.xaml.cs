@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace RawInput.Touchpad
+namespace Gamepad.Touchpad
 {
 	public partial class App : Application
 	{

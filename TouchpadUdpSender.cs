@@ -3,7 +3,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 
-namespace RawInput.Touchpad
+namespace Gamepad.Touchpad
 {
     public class TouchpadUdpSender : IDisposable
     {

@@ -1,4 +1,4 @@
-namespace RawInput.Touchpad
+namespace Gamepad.Touchpad
 {
 
     internal class AdbDevice

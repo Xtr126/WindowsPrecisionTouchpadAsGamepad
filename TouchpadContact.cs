@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace RawInput.Touchpad
+namespace Gamepad.Touchpad
 {
 
 	public class TouchpadContactView
