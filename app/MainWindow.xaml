@@ -137,7 +137,7 @@
           VerticalAlignment="Center"
           Background="Transparent"
           SelectionChanged="IconListView_SelectionChanged"
-          SelectedIndex="2">
+          SelectedIndex="0">
             <ListViewItem Height="60">
                 <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
                     <TextBlock Text="&#xEA6C;" 
