@@ -122,7 +122,9 @@ namespace Gamepad.Touchpad
             {
                 _ipAddress = newIp;
                 IpAddressBox.ClearValue(System.Windows.Controls.Control.BorderBrushProperty);
+				_udpSender.Dispose();
 				_udpSender = new TouchpadUdpSender(_ipAddress, _udpPort);
+				_tcpSender.Dispose();
 				_tcpSender = new TouchpadTcpSender(_ipAddress, _tcpPort);
             }
             else
@@ -138,6 +140,7 @@ namespace Gamepad.Touchpad
             {
                 _udpPort = port;
                 UdpPortBox.ClearValue(System.Windows.Controls.Control.BorderBrushProperty);
+				_udpSender.Dispose();
 				_udpSender = new TouchpadUdpSender(_ipAddress, _udpPort);
             }
             else
@@ -153,6 +156,7 @@ namespace Gamepad.Touchpad
             {
                 _tcpPort = port;
                 TcpPortBox.ClearValue(System.Windows.Controls.Control.BorderBrushProperty);
+				_tcpSender.Dispose();
 				_tcpSender = new TouchpadTcpSender(_ipAddress, _tcpPort);
             }
             else
@@ -275,6 +279,7 @@ namespace Gamepad.Touchpad
 			{
 				AdbHelper.RunAdbCommand(selectedDevice.Serial, $"/system/bin/app_process -Djava.class.path={AdbPushServer.RemotePath} / xtr.keymapper.server.windows.TouchpadDataReceiverKt --touchpad-input-tcp-port {_tcpPort}", false);
 				AdbHelper.RunAdbCommand(selectedDevice.Serial, $"forward tcp:{_tcpPort} tcp:{_tcpPort}");
+				_tcpSender.Dispose();
 				_tcpSender = new TouchpadTcpSender("127.0.0.1", 6060);
 				_tcpSender.Connect();
 				_tcpEnabled = true;
