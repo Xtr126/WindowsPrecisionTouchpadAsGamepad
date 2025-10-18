@@ -98,7 +98,6 @@ namespace Gamepad.Touchpad
             {
                 // Connection lost, attempt to reconnect on next send
                 _isConnected = false;
-                throw;
             }
         }
 
