@@ -88,8 +88,9 @@ namespace Gamepad.Touchpad
             }
             catch (IOException)
             {
-                // Connection lost, attempt to reconnect on next send
+                // Connection lost, attempt to reconnect
                 _isConnected = false;
+                throw;
             }
         }
 

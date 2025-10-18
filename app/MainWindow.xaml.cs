@@ -101,8 +101,20 @@ namespace Gamepad.Touchpad
 					if (_stdoutEnabled) 
 						WriteTouchpadContactFrame(_binaryWriter, contacts);
 
-					if (_tcpEnabled)
-						_tcpSender.SendContacts(contacts);
+					if (_tcpEnabled) 
+					{
+						try
+						{
+							_tcpSender.SendContacts(contacts);
+						}
+						catch (IOException)
+						{
+							// Connection lost, attempt to reconnect
+							_tcpSender.Dispose();
+							_tcpSender = new TouchpadTcpSender(_ipAddress, _tcpPort);
+							_tcpSender.Connect();
+						}	
+					}
 						
 					if (_udpEnabled)
 						_udpSender.SendContacts(contacts);
