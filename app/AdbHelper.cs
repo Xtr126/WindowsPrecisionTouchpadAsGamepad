@@ -17,10 +17,10 @@ namespace Gamepad.Touchpad
 
         public static string RunAdbCommand(string serial, string command)
         {
-            return RunAdbCommand(serial, command, true);
+            return RunAdbCommand(serial, command, true, null);
         }
 
-        public static string RunAdbCommand(string serial, string command, bool waitForExit)
+        public static string RunAdbCommand(string serial, string command, bool waitForExit, ProcessStartInfo _startInfo)
         {
             try
             {
@@ -28,7 +28,7 @@ namespace Gamepad.Touchpad
                     ? command 
                     : $"-s {serial} {command}";
 
-                ProcessStartInfo startInfo = new ProcessStartInfo
+                ProcessStartInfo startInfo = _startInfo ?? new ProcessStartInfo
                 {
                     FileName = "adb",
                     Arguments = fullCommand,
@@ -39,7 +39,7 @@ namespace Gamepad.Touchpad
                     StandardOutputEncoding = Encoding.UTF8,
                     StandardErrorEncoding = Encoding.UTF8
                 };
-                
+                                
                 using (Process process = Process.Start(startInfo))
                 {
                     if (process == null) {

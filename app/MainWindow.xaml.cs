@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Net;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace Gamepad.Touchpad
 {
@@ -289,10 +290,28 @@ namespace Gamepad.Touchpad
         {
 			if (DevicesGrid.SelectedItem is AdbDevice selectedDevice)
 			{
-				AdbHelper.RunAdbCommand(selectedDevice.Serial, $"/system/bin/app_process -Djava.class.path={AdbPushServer.RemotePath} / xtr.keymapper.server.windows.TouchpadDataReceiverKt --touchpad-input-tcp-port {_tcpPort}", false);
+                string localDirectory = AppDomain.CurrentDomain.BaseDirectory;
+                
+                string adbPath = Path.Combine(localDirectory, "adb.exe");
+
+				AdbHelper.RunAdbCommand(
+					null, 
+					null, 
+					false, 
+					new ProcessStartInfo
+					{
+						FileName = adbPath,
+						Arguments = $"-s {selectedDevice.Serial} shell /system/bin/app_process -Djava.class.path={AdbPushServer.RemotePath} / xtr.keymapper.server.windows.TouchpadDataReceiverKt --touchpad-input-tcp-port {_tcpPort}",
+						UseShellExecute = true,
+						CreateNoWindow = false,
+						
+					}
+				);
 				AdbHelper.RunAdbCommand(selectedDevice.Serial, $"forward tcp:{_tcpPort} tcp:{_tcpPort}");
 				_tcpSender.Dispose();
-				_tcpSender = new TouchpadTcpSender("127.0.0.1", 6060);
+				_ipAddress = "127.0.0.1";
+				_tcpPort = 6060;
+				_tcpSender = new TouchpadTcpSender(_ipAddress, _tcpPort);
 				_tcpSender.Connect();
 				_tcpEnabled = true;
 				selectedDevice.Streaming = true;
