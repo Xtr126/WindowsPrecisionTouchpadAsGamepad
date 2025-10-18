@@ -17,7 +17,7 @@ namespace Gamepad.Touchpad
         public TouchpadTcpSender(string remoteIp, int remotePort)
         {
             _tcpClient = new TcpClient();
-            _tcpClient.SendBufferSize = 8192;
+            _tcpClient.SendBufferSize = 294; // 4 + 29 * 10
             _remoteEndpoint = new IPEndPoint(IPAddress.Parse(remoteIp), remotePort);
         }
 
