@@ -1,6 +1,5 @@
 namespace Gamepad.Touchpad
 {
-
     internal class AdbDevice
     {
         public string Device { get; set; }
@@ -15,7 +14,7 @@ namespace Gamepad.Touchpad
         public AdbDevice()
         {
             Streaming = false;
-            Installed = false;
+            Installed = AdbPushServer.IsServerInstalled(Serial);
         }
     }
 }

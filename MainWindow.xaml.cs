@@ -251,5 +251,41 @@ namespace Gamepad.Touchpad
                 DevicesGrid.ItemsSource = null;
             }
         }
+
+		private void InstallServer_Click(object sender, RoutedEventArgs e)
+        {
+			if (DevicesGrid.SelectedItem is AdbDevice selectedDevice)
+			{
+				if (AdbPushServer.PushServer(selectedDevice.Serial)) {
+					// Refresh
+					selectedDevice.Installed = true;
+					DevicesGrid.ItemsSource = null; // Refresh
+					DevicesGrid.ItemsSource = _devices;
+				}
+			}
+			else
+			{
+				MessageBox.Show("No device selected.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
+			}
+		}
+
+		private void StartStreaming_Click(object sender, RoutedEventArgs e)
+        {
+			if (DevicesGrid.SelectedItem is AdbDevice selectedDevice)
+			{
+				AdbHelper.RunAdbCommand(selectedDevice.Serial, $"/system/bin/app_process -Djava.class.path={AdbPushServer.RemotePath} / xtr.keymapper.server.RemoteServiceShell --touchpad-input-tcp-port {_tcpPort}", false);
+				AdbHelper.RunAdbCommand(selectedDevice.Serial, $"forward tcp:{_tcpPort} tcp:{_tcpPort}");
+				_tcpEnabled = true;
+				_tcpSender = new TouchpadTcpSender("127.0.0.1", 6060);
+				_tcpSender.Connect();
+				selectedDevice.Streaming = true;
+				DevicesGrid.ItemsSource = null; // Refresh
+				DevicesGrid.ItemsSource = _devices;
+			}
+			else
+			{
+				MessageBox.Show("No device selected.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
+			}	
+		}
 	}
 }

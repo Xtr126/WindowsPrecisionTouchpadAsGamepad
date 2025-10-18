@@ -15,11 +15,22 @@
         <!-- Right column: content views -->
         <Grid Grid.Column="1" >
             <DockPanel Margin="10" x:Name="DevicesContent">
-                <Button Content="List Devices"
-                    DockPanel.Dock="Top"
-                    Margin="0,0,0,10"
-                    Padding="6"
-                    Click="ListDevices_Click"/>
+                <StackPanel Orientation="Horizontal"
+                            DockPanel.Dock="Top"    
+                            Margin="0,0,0,10">
+                    <Button Content="List Devices"
+                        Padding="6"
+                        Click="ListDevices_Click"/>
+
+                    <Button Content="Install server"
+                        Padding="6"
+                        Click="InstallServer_Click"/>
+
+                    <Button Content="Start streaming"
+                        Padding="6"
+                        Click="StartStreaming_Click"/>
+                </StackPanel>
+
 
                 <DataGrid x:Name="DevicesGrid"
                         AutoGenerateColumns="True"

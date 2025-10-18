@@ -9,13 +9,18 @@ namespace Gamepad.Touchpad
 {
     internal class AdbHelper
     {
-        public static bool GetConnectedDevices(List<AdbDevice> outVec)
+        public static bool GetConnectedDevices(List<AdbDevice> outDevices)
         {   
             string output = RunAdbCommand(null, "devices -l");
-            return AdbDevicesParser.ParseDevices(output, outVec);
+            return AdbDevicesParser.ParseDevices(output, outDevices);
         }
 
         public static string RunAdbCommand(string serial, string command)
+        {
+            return RunAdbCommand(serial, command, true);
+        }
+
+        public static string RunAdbCommand(string serial, string command, bool waitForExit)
         {
             try
             {
@@ -47,6 +52,8 @@ namespace Gamepad.Touchpad
                         
                         return null;
                     }
+                    if (!waitForExit) return null;
+
                     string output = process.StandardOutput.ReadToEnd();
                     string error = process.StandardError.ReadToEnd();
                     process.WaitForExit();
@@ -54,7 +61,7 @@ namespace Gamepad.Touchpad
                     if (process.ExitCode != 0)
                     {
                         MessageBox.Show(
-                            $"adb exited with code {process.ExitCode}: {error}\n{output}",
+                            $"adb {fullCommand} exited with code {process.ExitCode}: {error}\n{output}",
                             "ADB Error",
                             MessageBoxButton.OK,
                             MessageBoxImage.Error
@@ -62,7 +69,7 @@ namespace Gamepad.Touchpad
                         return null;
                     }
                     MessageBox.Show(
-                        $"{error}\n{output}",
+                        $"adb {fullCommand}\n{error}\n{output}",
                         $"adb exited with code {process.ExitCode}",
                         MessageBoxButton.OK,
                         MessageBoxImage.Information
@@ -91,6 +98,13 @@ namespace Gamepad.Touchpad
                 );
                 return null;
             }
+        }
+
+        public static bool AdbPush(string serial, string localPath, string remotePath)
+        {
+            string command = $"push \"{localPath}\" \"{remotePath}\"";
+            string output = AdbHelper.RunAdbCommand(serial, command);
+            return output != null;
         }
     }
 }
