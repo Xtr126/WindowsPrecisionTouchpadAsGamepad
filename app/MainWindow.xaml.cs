@@ -273,11 +273,11 @@ namespace Gamepad.Touchpad
         {
 			if (DevicesGrid.SelectedItem is AdbDevice selectedDevice)
 			{
-				AdbHelper.RunAdbCommand(selectedDevice.Serial, $"/system/bin/app_process -Djava.class.path={AdbPushServer.RemotePath} / xtr.keymapper.server.RemoteServiceShell --touchpad-input-tcp-port {_tcpPort}", false);
+				AdbHelper.RunAdbCommand(selectedDevice.Serial, $"/system/bin/app_process -Djava.class.path={AdbPushServer.RemotePath} / xtr.keymapper.server.windows.TouchpadDataReceiverKt --touchpad-input-tcp-port {_tcpPort}", false);
 				AdbHelper.RunAdbCommand(selectedDevice.Serial, $"forward tcp:{_tcpPort} tcp:{_tcpPort}");
-				_tcpEnabled = true;
 				_tcpSender = new TouchpadTcpSender("127.0.0.1", 6060);
 				_tcpSender.Connect();
+				_tcpEnabled = true;
 				selectedDevice.Streaming = true;
 				DevicesGrid.ItemsSource = null; // Refresh
 				DevicesGrid.ItemsSource = _devices;
