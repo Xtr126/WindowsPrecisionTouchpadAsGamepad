@@ -11,8 +11,7 @@ namespace Gamepad.Touchpad
         private TcpClient _tcpClient;
         private readonly IPEndPoint _remoteEndpoint;
         private NetworkStream _networkStream;
-        private readonly BinaryWriter _binaryWriter;
-        private readonly MemoryStream _memoryStream;
+        private BinaryWriter _binaryWriter;
         private bool _isConnected = false;
 
         public TouchpadTcpSender(string remoteIp, int remotePort)
@@ -20,8 +19,6 @@ namespace Gamepad.Touchpad
             _tcpClient = new TcpClient();
             _tcpClient.SendBufferSize = 8192;
             _remoteEndpoint = new IPEndPoint(IPAddress.Parse(remoteIp), remotePort);
-            _memoryStream = new MemoryStream();
-            _binaryWriter = new BinaryWriter(_memoryStream);
         }
 
         
@@ -34,6 +31,7 @@ namespace Gamepad.Touchpad
             {
                 _tcpClient.Connect(_remoteEndpoint);
                 _networkStream = _tcpClient.GetStream();
+                _binaryWriter = new BinaryWriter(_networkStream);
                 _isConnected = true;
             }
             catch (SocketException ex)
@@ -60,7 +58,7 @@ namespace Gamepad.Touchpad
         public void Disconnect()
         {
             if (!_isConnected) return;
-            
+            _binaryWriter?.Close();
             _networkStream?.Close();
             _tcpClient?.Close();
             _isConnected = false;
@@ -68,9 +66,6 @@ namespace Gamepad.Touchpad
 
         private void WriteTouchpadContactFrame(BinaryWriter bw, TouchpadContact[] contacts)
         {
-            // Reset the memory stream position for writing
-            _memoryStream.Position = 0;
-            
             // Calculate frame size: count (4) + contacts (29 * N)
             int frameBodySize = 4 + contacts.Length * 29;
             bw.Write(frameBodySize);
@@ -90,9 +85,6 @@ namespace Gamepad.Touchpad
             try
             {
                 WriteTouchpadContactFrame(_binaryWriter, contacts);
-                var data = _memoryStream.ToArray();
-                _networkStream.Write(data, 0, (int)_memoryStream.Position);
-                _networkStream.Flush();
             }
             catch (IOException)
             {
@@ -105,12 +97,9 @@ namespace Gamepad.Touchpad
         {
             Disconnect();
             
-            _tcpClient?.Dispose();
-            _networkStream?.Dispose();
-            _binaryWriter?.Close();
             _binaryWriter?.Dispose();
-            _memoryStream?.Close();
-            _memoryStream?.Dispose();
+            _networkStream?.Dispose();
+            _tcpClient?.Dispose();
         }
     }
 }
