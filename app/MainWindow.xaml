@@ -33,6 +33,10 @@
                         Padding="6"
                         Click="ConnectTcpip_Click"/>
 
+                    <Button Content="Kill ADB"
+                        Padding="6"
+                        Click="KillAdb_Click"/>
+
                 </StackPanel>
 
 

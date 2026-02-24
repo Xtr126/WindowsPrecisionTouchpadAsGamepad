@@ -343,5 +343,12 @@ namespace Gamepad.Touchpad
 			}
 		}
 
+		private void KillAdb_Click(object sender, RoutedEventArgs e)
+        {
+			AdbHelper.RunAdbCommand(null, "kill-server");
+            _devices.Clear();
+			DevicesGrid.ItemsSource = null; // Refresh
+			DevicesGrid.ItemsSource = _devices;
+		}
 	}
 }
