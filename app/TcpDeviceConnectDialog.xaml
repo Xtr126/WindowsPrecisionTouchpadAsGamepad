@@ -1,0 +1,48 @@
+<Window x:Class="Gamepad.Touchpad.TcpDeviceConnectDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Connect to TCP Device"
+        Height="270"
+        Width="350"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="SingleBorderWindow">
+    
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock VerticalAlignment="Center" TextWrapping="Wrap">
+            Only for advanced users. adbd must be listening on TCP on the target device.<LineBreak/>
+            <LineBreak/>
+            IP Address:
+        </TextBlock>
+        <TextBox x:Name="IpAddressTextBox"
+                 Grid.Row="1"
+                 Margin="0,5,0,10"/>
+
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <TextBlock Text="Port:" 
+                       VerticalAlignment="Center"/>
+            <TextBox x:Name="PortTextBox"
+                     Width="100"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    Margin="0,15,0,0">
+            <Button Content="OK"
+                    Width="75"
+                    Margin="0,0,10,0"
+                    IsDefault="True"
+                    Click="OkButton_Click"/>
+            <Button Content="Cancel"
+                    Width="75"
+                    IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

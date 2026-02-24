@@ -327,5 +327,21 @@ namespace Gamepad.Touchpad
 				MessageBox.Show("No device selected.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
 			}	
 		}
+		private void ConnectTcpip_Click(object sender, RoutedEventArgs e)
+        {
+			var dialog = new TcpDeviceConnectDialog
+			{
+				Owner = this
+			};
+
+			if (dialog.ShowDialog() == true)
+			{
+				var ip = dialog.IpAddress;
+				var port = dialog.Port;
+				AdbHelper.RunAdbCommand(null, $"connect {ip}:{port}");
+				ListDevices(false);
+			}
+		}
+
 	}
 }
