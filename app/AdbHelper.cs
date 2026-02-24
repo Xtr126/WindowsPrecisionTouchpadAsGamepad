@@ -9,18 +9,29 @@ namespace Gamepad.Touchpad
 {
     internal class AdbHelper
     {
-        public static bool GetConnectedDevices(List<AdbDevice> outDevices)
+        public static bool GetConnectedDevices(List<AdbDevice> outDevices, bool quiet)
         {   
-            string output = RunAdbCommand(null, "devices -l");
-            return AdbDevicesParser.ParseDevices(output, outDevices);
+            string output = RunAdbCommand(null, "devices -l", quiet);
+            return AdbDevicesParser.ParseDevices(output, outDevices, quiet);
         }
 
         public static string RunAdbCommand(string serial, string command)
         {
-            return RunAdbCommand(serial, command, true, null);
+            return RunAdbCommand(serial, command, false);
         }
 
+        public static string RunAdbCommand(string serial, string command, bool quiet)
+        {
+            return RunAdbCommand(serial, command, true, null, quiet);
+        }
+
+
         public static string RunAdbCommand(string serial, string command, bool waitForExit, ProcessStartInfo _startInfo)
+        {
+            return RunAdbCommand(serial, command, waitForExit, _startInfo, false);
+        }
+
+        public static string RunAdbCommand(string serial, string command, bool waitForExit, ProcessStartInfo _startInfo, bool quiet)
         {
             try
             {
@@ -68,7 +79,7 @@ namespace Gamepad.Touchpad
                         );
                         return null;
                     }
-                    MessageBox.Show(
+                    if (!quiet) MessageBox.Show(
                         $"adb {fullCommand}\n{error}\n{output}",
                         $"adb exited with code {process.ExitCode}",
                         MessageBoxButton.OK,

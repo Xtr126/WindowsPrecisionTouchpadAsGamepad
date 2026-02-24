@@ -11,10 +11,11 @@ namespace Gamepad.Touchpad
         public string Product { get; set; }
         public string TransportId { get; set; }
         
-        public AdbDevice()
+        public AdbDevice(bool quiet, string serial)
         {
+            Installed = AdbPushServer.IsServerInstalled(serial, quiet);
             Streaming = false;
-            Installed = AdbPushServer.IsServerInstalled(Serial);
+            Serial = serial;
         }
     }
 }

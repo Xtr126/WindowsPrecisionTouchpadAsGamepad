@@ -10,7 +10,7 @@ namespace Gamepad.Touchpad
 	{   
         public const string RemotePath = "/data/local/tmp/xtmapper-server-touchpad.apk";
         
-        public static bool IsServerInstalled(string serial) 
+        public static bool IsServerInstalled(string serial, bool quiet) 
         {
             string serverPath = GetServerPath();
             if (serverPath == null)
@@ -33,7 +33,7 @@ namespace Gamepad.Touchpad
             }
             
             // Get remote file MD5
-            string remoteMd5 = GetRemoteFileMd5(serial, RemotePath);
+            string remoteMd5 = GetRemoteFileMd5(serial, RemotePath, quiet);
             
             if (remoteMd5 == null)
             {
@@ -99,13 +99,13 @@ namespace Gamepad.Touchpad
             }
         }
 
-        private static string GetRemoteFileMd5(string serial, string remotePath)
+        private static string GetRemoteFileMd5(string serial, string remotePath, bool quiet)
         {
             try
             {
                 // Use adb shell to get MD5 sum of remote file
                 string command = $"shell md5sum {remotePath}";
-                string output = AdbHelper.RunAdbCommand(serial, command);
+                string output = AdbHelper.RunAdbCommand(serial, command, quiet);
                 
                 if (string.IsNullOrEmpty(output))
                     return null;

@@ -65,10 +65,9 @@ namespace Gamepad.Touchpad
 			if (TouchpadExists)
 			{
 				var success = TouchpadHelper.RegisterInput(_targetSource.Handle);
-
 				_log.Add($"Precision touchpad registered: {success}");
 			}
-			
+			ListDevices(true);
 		}
 
 		public void UpdateContacts(TouchpadContact[] newContacts)
@@ -255,9 +254,14 @@ namespace Gamepad.Touchpad
 
         private void ListDevices_Click(object sender, RoutedEventArgs e)
         {
+			ListDevices(false);
+        }
+
+		private void ListDevices(bool quiet)
+        {
             _devices.Clear();
 
-            if (AdbHelper.GetConnectedDevices(_devices))
+            if (AdbHelper.GetConnectedDevices(_devices, quiet))
             {
                 DevicesGrid.ItemsSource = null; // Refresh
                 DevicesGrid.ItemsSource = _devices;

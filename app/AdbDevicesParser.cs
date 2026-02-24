@@ -8,7 +8,7 @@ namespace Gamepad.Touchpad
     {
         private const string Header = "List of devices attached";
         
-        public static bool ParseDevices(string str, List<AdbDevice> outDevices)
+        public static bool ParseDevices(string str, List<AdbDevice> outDevices, bool quiet)
         {
             bool headerFound = false;
             
@@ -36,7 +36,7 @@ namespace Gamepad.Touchpad
                 if (string.IsNullOrWhiteSpace(trimmedLine))
                     continue;
                     
-                AdbDevice device = ParseDevice(trimmedLine);
+                AdbDevice device = ParseDevice(trimmedLine, quiet);
                 if (device != null)
                 {
                     outDevices.Add(device);
@@ -48,7 +48,7 @@ namespace Gamepad.Touchpad
             return headerFound || outDevices.Count > 0;
         }
         
-        private static AdbDevice ParseDevice(string line)
+        private static AdbDevice ParseDevice(string line, bool quiet)
         {
             // One device line looks like:
             // "0123456789abcdef	device usb:2-1 product:MyProduct model:MyModel "
@@ -78,9 +78,8 @@ namespace Gamepad.Touchpad
             string serial = parts[0];
             string state = parts[1];
             
-            var device = new AdbDevice
+            var device = new AdbDevice(quiet, serial)
             {
-                Serial = serial,
                 State = state
             };
             
