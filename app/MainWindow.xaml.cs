@@ -369,6 +369,26 @@ namespace Gamepad.Touchpad
 			}	
 		}
 
+		private void StopStreaming_Click(object sender, RoutedEventArgs e)
+        {
+			if (DevicesGrid.SelectedItem is AdbDevice selectedDevice)
+			{
+				if (selectedDevice.Streaming) {
+					AdbHelper.RunAdbCommand(selectedDevice.Serial, $"forward --remove tcp:{_tcpPort}");
+					_udpEnabled = false;
+					_udpSender.Dispose();
+					selectedDevice.Streaming = false;
+					DevicesGrid.ItemsSource = null; // Refresh
+					DevicesGrid.ItemsSource = _devices;
+				}
+			}
+			else
+			{
+				MessageBox.Show("No device selected.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
+			}	
+
+		}
+
 		private void ConnectTcpip_Click(object sender, RoutedEventArgs e)
         {
 			var dialog = new TcpDeviceConnectDialog

@@ -29,6 +29,11 @@
                     <Button Content="Start streaming"
                         Padding="6"
                         Click="StartStreaming_Click"/>
+                        
+                    <Button Content="Stop streaming"
+                        Padding="6"
+                        Click="StopStreaming_Click"/>
+
                     <Button Content="Connect TCP/IP"
                         Padding="6"
                         Click="ConnectTcpip_Click"/>
