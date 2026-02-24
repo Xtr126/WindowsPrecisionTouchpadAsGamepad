@@ -294,30 +294,71 @@ namespace Gamepad.Touchpad
         {
 			if (DevicesGrid.SelectedItem is AdbDevice selectedDevice)
 			{
-                string localDirectory = AppDomain.CurrentDomain.BaseDirectory;
-                
-                string adbPath = Path.Combine(localDirectory, "adb.exe");
+				bool tcpIpDevice = false;
 
+				// Check if device can be connected directly without adb forward
+				if (!string.IsNullOrWhiteSpace(selectedDevice.Serial) && selectedDevice.Serial.Contains(":"))
+				{
+					var parts = selectedDevice.Serial.Split(':');
+
+					if (parts.Length == 2)
+					{
+						_ipAddress = parts[0];
+						string portPart = parts[1];
+
+						if (int.TryParse(portPart, out int adbPort))
+						{
+							tcpIpDevice = true;
+						}
+					}
+				}
+
+				// Kill running server processes
+				// AdbHelper.RunAdbCommand(selectedDevice.Serial, "shell pkill -f xtr.keymapper.server.windows.TouchpadDataReceiverKt", true);
+				string touchpadInputPortArg;
+
+				if (tcpIpDevice) 
+				{
+					_udpPort = 5050;
+					touchpadInputPortArg = $"--touchpad-input-udp-port {_udpPort}";
+				}
+				else 
+				{
+					_tcpPort = 6060;
+					touchpadInputPortArg = $"--touchpad-input-tcp-port {_tcpPort}";
+				}
+				
 				AdbHelper.RunAdbCommand(
 					null, 
 					null, 
 					false, 
 					new ProcessStartInfo
 					{
-						FileName = adbPath,
-						Arguments = $"-s {selectedDevice.Serial} shell /system/bin/app_process -Djava.class.path={AdbPushServer.RemotePath} / xtr.keymapper.server.windows.TouchpadDataReceiverKt --touchpad-input-tcp-port {_tcpPort}",
+						FileName = "adb",
+						Arguments = $"-s {selectedDevice.Serial} shell /system/bin/app_process -Djava.class.path={AdbPushServer.RemotePath} / xtr.keymapper.server.windows.TouchpadDataReceiverKt {touchpadInputPortArg}",
 						UseShellExecute = true,
 						CreateNoWindow = false,
 						
 					}
 				);
-				AdbHelper.RunAdbCommand(selectedDevice.Serial, $"forward tcp:{_tcpPort} tcp:{_tcpPort}");
-				_tcpSender.Dispose();
-				_ipAddress = "127.0.0.1";
-				_tcpPort = 6060;
-				_tcpSender = new TouchpadTcpSender(_ipAddress, _tcpPort);
-				_tcpSender.Connect();
-				_tcpEnabled = true;
+
+				
+				if (!tcpIpDevice) 
+				{
+					_tcpSender.Dispose();
+					AdbHelper.RunAdbCommand(selectedDevice.Serial, $"forward tcp:{_tcpPort} tcp:{_tcpPort}");
+					_ipAddress = "127.0.0.1";
+					_tcpSender = new TouchpadTcpSender(_ipAddress, _tcpPort);
+					_tcpSender.Connect();
+					_tcpEnabled = true;
+				}
+				else 
+				{
+					_udpSender.Dispose();
+					// Uses device's IP address
+					_udpSender = new TouchpadUdpSender(_ipAddress, _udpPort);
+					_udpEnabled = true;
+				}
 				selectedDevice.Streaming = true;
 				DevicesGrid.ItemsSource = null; // Refresh
 				DevicesGrid.ItemsSource = _devices;
@@ -327,6 +368,7 @@ namespace Gamepad.Touchpad
 				MessageBox.Show("No device selected.", "Info", MessageBoxButton.OK, MessageBoxImage.Error);
 			}	
 		}
+
 		private void ConnectTcpip_Click(object sender, RoutedEventArgs e)
         {
 			var dialog = new TcpDeviceConnectDialog
